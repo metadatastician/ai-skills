@@ -6,12 +6,12 @@
 # ;; SPDX-License-Identifier: MPL-2.0
 # (praxis-deed
 #   :schema-version  "1.0.0"
-#   :canonical-name  "rsr-template-repo-launcher"
+#   :canonical-name  "ai-skills-launcher"
 #   :beholding-chora #uuid"0889b37b-defb-831f-973c-e119500db00e"
 #   (artefact :type "launcher" :version "0.1.0"
 #             :generator "provision-set")
-#   (app :name "rsr-template-repo" :display "rsr-template-repo"
-#        :url "https://github.com/hyperpolymath/rsr-template-repo" :archetype "library")
+#   (app :name "ai-skills" :display "ai-skills"
+#        :url "https://github.com/metadatastician/ai-skills" :archetype "library")
 #   (compliance :standard-version "0.6.0"
 #               :standards ("launcher-standard.adoc"
 #                           "PROVISIONING-STANDARD.adoc"))
