@@ -211,10 +211,13 @@ function checkSkill(root, dirName, overlay, families) {
     if (!srcPath) console.log(`  no-loss check: NOT RUN (source ${data.source} not found in the root or the overlay${overlay ? "" : "; no overlay given"})`);
     else {
       const src = splitlines(fs.readFileSync(srcPath, "utf8")).slice(1); // line 1 is a comment line, not part of the text
-      const counted = src.filter((l) => norm(l) && !SKIP_SOURCE_LINES.has(strip(l)));
+      // Line numbers are 1-based in the source file (its line 1 was dropped above).
+      const counted = src.map((l, i) => ({ l, n: i + 2 })).filter(({ l }) => norm(l) && !SKIP_SOURCE_LINES.has(strip(l)));
       nsrc = counted.length;
-      lost = counted.filter((l) => !have.has(norm(l)));
-      if (lost.length) problems.push(`${lost.length} original lines missing, e.g. ${JSON.stringify(lost.slice(0, 3))}`);
+      lost = counted.filter(({ l }) => !have.has(norm(l)));
+      // Report line numbers only, never line text: the source may be a private
+      // original from the overlay, and this message can reach CI or shared logs.
+      if (lost.length) problems.push(`${lost.length} original lines missing from ${data.source}, at lines ${lost.slice(0, 10).map(({ n }) => n).join(", ")}${lost.length > 10 ? ", …" : ""}`);
     }
   }
   const words = Object.fromEntries(mdFiles.map((f) => [f, splitWords(fs.readFileSync(path.join(d, f), "utf8")).length]));
