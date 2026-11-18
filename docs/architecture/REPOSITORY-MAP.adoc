@@ -181,6 +181,10 @@ predecessors did.
 | yes
 | dispatch.sh, custom-checks.k9.ncl, local-hooks.sh
 
+| `skills/`
+| optional
+| the skills library: data/, generated skills/, tools/, experiments/; tools read an optional private overlay directory (SKILLS_OVERLAY / --overlay)
+
 | `sonar-project.properties`
 | optional
 | only where the repo is analysed by SonarCloud
