@@ -1,4 +1,7 @@
 #!/usr/bin/env bun
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
 // recover-skills.mjs - find lost "skill" texts inside exported AI chat histories.
 //
 // Usage: bun tools/recover-skills.mjs [--out DIR] [--min-words N] [--name NAME ...] [--names FILE] [--overlay DIR] FILE_OR_DIR ...

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
 // Checks for every skill defined in data/: format, family rules, no loss, no drift.
 //
 //   bun tools/check.mjs [--root DIR] [--overlay DIR]

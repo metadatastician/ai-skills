@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
 // One-off importer: a pasted seam-architect text -> data/seam-architect/
 //   bun tools/import-seam.mjs <paste.txt> <data/seam-architect>
 //

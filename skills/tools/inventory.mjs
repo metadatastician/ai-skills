@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
 // Three-way inventory: for each skill, what does each version contain that another lacks?
 //
 //   bun tools/inventory.mjs [--overlay DIR]     (or env SKILLS_OVERLAY)

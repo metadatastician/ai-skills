@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
 // Render data/<name>/manifest.json + data/<name>/sections/*.md into
 // skills/<name>/SKILL.md plus reference files.
 //
