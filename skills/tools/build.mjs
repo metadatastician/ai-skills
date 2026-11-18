@@ -11,6 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { assertSegment, resolveInside } from "./contain.mjs";
 
 export const DEFAULT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -119,23 +120,31 @@ export function skillDirs(root) {
     .map((e) => e.name).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 
+// Two phases, so a bad manifest stops the build before anything is deleted or written: first render every skill
+// and resolve every output path (name = one plain segment; each file path relative, below the skill directory,
+// through no symlink), then delete and write.
 export function build(root, outroot) {
-  const built = [];
+  fs.mkdirSync(outroot, { recursive: true });
+  const plan = [];
   for (const dirName of skillDirs(root)) {
     const { data, body } = loadSkill(root, dirName);
-    const files = render(data, body);
-    const d = path.join(outroot, data.name);
-    fs.rmSync(d, { recursive: true, force: true });
-    for (const [rel, text] of Object.entries(files)) {
-      const p = path.join(d, rel);
+    assertSegment(data.name, `data/${dirName}: manifest name`);
+    const skillDir = resolveInside(outroot, data.name);
+    const files = Object.entries(render(data, body)).map(([rel, text]) => {
+      try { return [resolveInside(outroot, rel, data.name), text]; }
+      catch (e) { throw new Error(`data/${dirName}: section place ${JSON.stringify(rel)}: ${e.message}`); }
+    });
+    plan.push({ name: data.name, skillDir, files });
+  }
+  for (const { skillDir, files } of plan) {
+    fs.rmSync(skillDir, { recursive: true, force: true });
+    for (const [p, text] of files) {
       fs.mkdirSync(path.dirname(p), { recursive: true });
       fs.writeFileSync(p, text, "utf8");
     }
-    built.push(data.name);
   }
-  return built;
+  return plan.map((p) => p.name);
 }
-
 
 // Optional private overlay: a directory that mirrors this tree (originals/, names.txt, families.json, ...).
 // Chosen by --overlay DIR or the SKILLS_OVERLAY environment variable. Returns null when neither is set;

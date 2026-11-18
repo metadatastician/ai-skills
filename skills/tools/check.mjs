@@ -3,7 +3,7 @@
 
 // Checks for every skill defined in data/: format, family rules, no loss, no drift.
 //
-//   bun tools/check.mjs [--root DIR] [--overlay DIR]
+//   bun tools/check.mjs [--root DIR] [--overlay DIR] [--agentskills PATH]
 //
 // --overlay DIR (or env SKILLS_OVERLAY): optional private overlay. Source texts named by a manifest, and extra
 // family rules (families.json), are read from it when present. Without it the checks that need them report
@@ -20,8 +20,9 @@ import { DEFAULT_ROOT, build, loadSkill, manifestText, parseArgs, resolveOverlay
 const FAMILY_KINDS = { seam:["modes", "mandate", "lenses-intro", "lens", "workflows", "outputs", "interaction"] };
 const SKIP_SOURCE_LINES = new Set(["Instructions", "See less"]);
 const ALLOWED_KEYS = new Set(["name", "description", "license", "compatibility", "metadata", "allowed-tools"]);
-// Optional third-party cross-check: set AGENTSKILLS_BIN to the `agentskills` executable to enable it.
-const AGENTSKILLS = process.env.AGENTSKILLS_BIN || "";
+// Optional third-party cross-check: pass --agentskills PATH (the `agentskills` executable) to enable it. It is a
+// command-line flag, not an environment variable, so a stray or inherited environment can never make this tool
+// run a program; naming one is an explicit act. AGENTSKILLS_BIN from earlier versions is not read.
 
 // Python-compatible whitespace, so norm() and splitlines() behave as the old checker did.
 const WS = "\\t\\n\\v\\f\\r \\x1c-\\x1f\\x85\\xa0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000";
@@ -64,8 +65,9 @@ function scalar(raw) {
     try { const v = JSON.parse(t); return typeof v === "string" ? { value: v } : { error: "bad quoted string" }; }
     catch { return { error: "unsupported double-quoted string" }; }
   }
-  // plain scalar: anything YAML would resolve to a non-string is not a string
-  if (t === "" || /^(~|null|true|false|yes|no|on|off)$/i.test(t) || /^[-+]?(\.[0-9]+|[0-9][0-9_]*(\.[0-9_]*)?)([eE][-+]?[0-9]+)?$/.test(t)
+  // plain scalar: anything YAML would resolve to a non-string is not a string. A leading [ or { makes a flow
+  // collection (a sequence or a map), never a string.
+  if (t === "" || /^[\[{]/.test(t) || /^(~|null|true|false|yes|no|on|off)$/i.test(t) || /^[-+]?(\.[0-9]+|[0-9][0-9_]*(\.[0-9_]*)?)([eE][-+]?[0-9]+)?$/.test(t)
       || /^[-+]?(0x[0-9a-fA-F_]+|0o?[0-7_]+|0b[01_]+|\.(inf|nan))$/i.test(t) || /^\d{4}-\d\d-\d\d/.test(t)) {
     return { value: t, nonString: true };
   }
@@ -135,8 +137,9 @@ export function formatProblems(skillMd, dirName) {
   return problems;
 }
 
-function crossCheck(dir) {
+function crossCheck(dir, AGENTSKILLS) {
   // Optional third-party validator. Never counts as a pass unless it actually ran and exited 0.
+  if (!AGENTSKILLS) return { line: "agentskills cross-check: NOT AVAILABLE (not run)", problem: null };
   try { fs.accessSync(AGENTSKILLS, fs.constants.X_OK); }
   catch { return { line: "agentskills cross-check: NOT AVAILABLE (not run)", problem: null }; }
   const r = spawnSync(AGENTSKILLS, ["validate", dir], { encoding: "utf8" });
@@ -155,7 +158,7 @@ function loadFamilies(overlay) {
   return { ...FAMILY_KINDS, ...extra };
 }
 
-function checkSkill(root, dirName, overlay, families) {
+function checkSkill(root, dirName, overlay, families, agentskills) {
   const problems = [];
   let loaded;
   try { loaded = loadSkill(root, dirName); } catch (e) { return [`data/${dirName}: cannot load: ${e.message}`]; }
@@ -185,7 +188,7 @@ function checkSkill(root, dirName, overlay, families) {
   // 2. format rules, natively; third-party validator as optional cross-check
   const skill = fs.readFileSync(path.join(d, "SKILL.md"), "utf8");
   for (const p of formatProblems(skill, path.basename(d))) problems.push("format: " + p);
-  const x = crossCheck(d);
+  const x = crossCheck(d, agentskills);
   console.log("  " + x.line);
   if (x.problem) problems.push(x.problem);
 
@@ -231,7 +234,8 @@ function checkSkill(root, dirName, overlay, families) {
 }
 
 function main() {
-  const o = parseArgs(process.argv.slice(2), ["root", "overlay"]);
+  const o = parseArgs(process.argv.slice(2), ["root", "overlay", "agentskills"]);
+  if (process.env.AGENTSKILLS_BIN) console.log("  note: AGENTSKILLS_BIN is no longer read; pass --agentskills PATH to run the cross-check");
   const root = o.root ?? DEFAULT_ROOT;
   const overlay = resolveOverlay(o);
   const families = loadFamilies(overlay);
@@ -239,7 +243,7 @@ function main() {
   const dirs = skillDirs(root);
   if (dirs.length === 0) { console.log("  FAIL: no skills found under data/"); failed = true; }
   for (const dirName of dirs) {
-    for (const p of checkSkill(root, dirName, overlay, families)) { failed = true; console.log("  FAIL:", p); }
+    for (const p of checkSkill(root, dirName, overlay, families, o.agentskills)) { failed = true; console.log("  FAIL:", p); }
   }
   console.log("RESULT:", failed ? "FAIL" : "PASS");
   process.exitCode = failed ? 1 : 0;

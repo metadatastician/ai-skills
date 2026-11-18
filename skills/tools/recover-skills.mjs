@@ -7,10 +7,11 @@
 // Usage: bun tools/recover-skills.mjs [--out DIR] [--min-words N] [--name NAME ...] [--names FILE] [--overlay DIR] FILE_OR_DIR ...
 //
 // PRIVACY / SAFETY: this tool runs entirely locally. It imports only node:fs,
-// node:path and node:crypto, never opens a network connection, and writes only
-// inside the output directory (--out, default skills/recovered/ whatever the working directory). Every write goes
-// through writeInside(), which refuses any path that resolves outside that
-// directory. Chat exports contain private material: review the output before
+// node:path, node:crypto, node:url and ./contain.mjs (which imports only node:fs and node:path), never opens a
+// network connection, and writes and deletes only inside the output directory (--out, default skills/recovered/
+// whatever the working directory). Skill names must be single path segments, and every path it will write or
+// delete is resolved through contain.mjs (real path of --out, no symlink below it) and checked before anything
+// is touched; a name or path that fails the check is exit 2 with nothing written. Chat exports contain private material: review the output before
 // committing or sharing any of it.
 //
 // Exit status: 0 = ran to completion (including "nothing found"),
@@ -21,6 +22,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { assertSegment, resolveInside } from "./contain.mjs";
 
 // The default output directory is skills/recovered/, fixed to this file's place
 // rather than the working directory, so skills/.gitignore always covers it:
@@ -203,7 +205,7 @@ function detectName(text, a) {
     const s = slugify(first.split(/[:–—]| - /)[0]);
     if (s) return s;
   }
-  return "unknown-" + sha256(normWs(text)).slice(0, 8);
+  return "unknown-" + sha256(text).slice(0, 8);
 }
 
 // ---------------------------------------------------------------- metadata from enclosing objects
@@ -341,35 +343,45 @@ function main() {
   if (opts.namesFile) fileNames = readNames(opts.namesFile);
   else if (opts.overlay && fs.existsSync(path.join(opts.overlay, "names.txt"))) fileNames = readNames(path.join(opts.overlay, "names.txt"));
   const known = buildKnown([...fileNames, ...opts.names]);
+  // A skill name becomes a directory name under --out, so it must be one plain path segment.
+  for (const k of known) {
+    try { assertSegment(k.name, "skill name"); } catch (e) { fail(`error: ${e.message}`); }
+  }
   const onlyNames = opts.names.length ? new Set(opts.names.map(nameKey)) : null;
 
   const errors = [];
   const files = collectFiles(opts.inputs, fs.existsSync(outAbs) ? fs.realpathSync(outAbs) : outAbs, errors);
 
-  const stats = { files: 0, values: 0, skippedLines: 0, candidates: 0, hits: 0, ignoredNoHit: 0 };
-  const cache = new Map(); // normalized-hash -> analysis
-  const versions = new Map(); // normalized-hash -> version record
+  const stats = { files: 0, values: 0, candidates: 0, hits: 0, ignoredNoHit: 0 };
+  const cache = new Map(); // sha256 of the analysed text -> analysis
+  const versions = new Map(); // sha256 of the exported text -> version record
 
   const onString = (raw, frames, jsonPath, file, line) => {
-    const text = decodeEntities(raw);
-    if (wordCount(text) < opts.minWords) return;
+    // Detection looks at the entity-decoded view (an export may escape < & >), but what is kept and written is
+    // the text exactly as exported: a literal "&lt;" in a skill stays "&lt;". Both maps are keyed by exact text,
+    // never by a whitespace-normalised form, because analysis depends on line structure and two formattings
+    // of a skill are two versions.
+    const text = raw;
+    const view = decodeEntities(raw);
+    if (wordCount(view) < opts.minWords) return;
     stats.candidates++;
-    const nh = sha256(normWs(text));
-    let a = cache.get(nh);
+    const vh = sha256(view);
+    let a = cache.get(vh);
     if (!a) {
-      a = analyze(text, known);
-      a.name = a.isHit ? detectName(text, a) : null;
+      a = analyze(view, known);
+      a.name = a.isHit ? detectName(view, a) : null;
       a.lines = null;
-      cache.set(nh, a);
+      cache.set(vh, a);
     }
     if (!a.isHit) return;
     stats.hits++;
     const meta = extractMeta(frames);
     const loc = { file: file.display, line, path: jsonPath, ...meta };
-    let v = versions.get(nh);
+    const sha = sha256(text);
+    let v = versions.get(sha);
     if (!v) {
-      v = { nh, text, words: wordCount(text), sha: sha256(text), a, name: a.name, locs: [] };
-      versions.set(nh, v);
+      v = { text, words: wordCount(text), sha, a, name: a.name, locs: [] };
+      versions.set(sha, v);
     }
     v.locs.push(loc);
   };
@@ -394,14 +406,20 @@ function main() {
     if (isLines) {
       stats.files++;
       const ls = buf.split("\n");
+      let bad = 0;
       for (let i = 0; i < ls.length; i++) {
         const l = ls[i].trim();
         if (!l) continue;
         let v;
-        try { v = JSON.parse(l); } catch { stats.skippedLines++; continue; }
+        try { v = JSON.parse(l); } catch (e) {
+          // An unreadable record is invalid input (exit 2, nothing written), never a silent skip.
+          if (++bad <= 10) errors.push(`${file.display}: line ${i + 1}: not valid JSON (${e.message})`);
+          continue;
+        }
         stats.values++;
         walk(v, [], "$", file, i + 1);
       }
+      if (bad > 10) errors.push(`${file.display}: ${bad - 10} more malformed lines`);
     } else {
       let v;
       try { v = JSON.parse(buf); } catch (e) {
@@ -463,7 +481,6 @@ function main() {
     [
       `files read: ${stats.files}`,
       `JSON values parsed: ${stats.values}`,
-      `lines skipped (unparseable): ${stats.skippedLines}`,
       `candidates considered (strings >= ${opts.minWords} words): ${stats.candidates}`,
       `hits (skill-shaped occurrences): ${stats.hits}`,
       `distinct versions: ${all.length}`,
@@ -475,22 +492,42 @@ function main() {
     process.exit(0);
   }
 
-  // ---- write (only inside outAbs)
-  const writeInside = (rel, data) => {
-    const target = path.resolve(outAbs, rel);
-    if (target !== outAbs && !target.startsWith(outAbs + path.sep)) throw new Error(`refusing to write outside output directory: ${target}`);
+  // ---- check every path before touching anything, then write (only inside outAbs)
+  // resolveInside() refuses a name that is not one plain segment, a path that climbs out, and any symlink below
+  // --out (a linked skill directory or INDEX.md would redirect writes and deletions elsewhere).
+  const targets = new Map(); // "skill/file" or "INDEX.md" -> absolute path
+  const preflight = [];
+  const resolveOut = (key, rel, under) => {
+    try { targets.set(key, resolveInside(outAbs, rel, under)); } catch (e) { preflight.push(`${key}: ${e.message}`); }
+  };
+  for (const n of skillNames) {
+    resolveOut(n, ".", n);
+    for (const v of bySkill.get(n)) resolveOut(n + "/" + v.fname, v.fname, n);
+  }
+  resolveOut("INDEX.md", "INDEX.md");
+  if (preflight.length) {
+    for (const e of preflight) process.stderr.write("error: " + e + "\n");
+    process.stderr.write("nothing was written\n");
+    process.exit(2);
+  }
+  const writeInside = (key, data) => {
+    const target = targets.get(key);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, data);
   };
   try {
     fs.mkdirSync(outAbs, { recursive: true });
     for (const n of skillNames) {
-      const dir = path.join(outAbs, n);
-      if (fs.existsSync(dir)) {
+      const dir = targets.get(n);
+      if (fs.existsSync(dir) && fs.lstatSync(dir).isDirectory()) {
         // remove stale versions written by an earlier run (our own file-name pattern only)
-        for (const f of fs.readdirSync(dir)) if (/^\d+-\d+w-(?:\d{4}-\d{2}-\d{2}|nodate)-[0-9a-f]{12}\.txt$/.test(f)) fs.unlinkSync(path.join(dir, f));
+        for (const f of fs.readdirSync(dir)) {
+          if (!/^\d+-\d+w-(?:\d{4}-\d{2}-\d{2}|nodate)-[0-9a-f]{12}\.txt$/.test(f)) continue;
+          const p = resolveInside(outAbs, f, n);
+          if (fs.lstatSync(p).isFile()) fs.unlinkSync(p);
+        }
       }
-      for (const v of bySkill.get(n)) writeInside(path.join(n, v.fname), v.text);
+      for (const v of bySkill.get(n)) writeInside(n + "/" + v.fname, v.text);
     }
     const cell = (s, max = 80) => {
       let t = String(s ?? "-").replace(/\s+/g, " ").trim() || "-";

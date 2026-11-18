@@ -10,6 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { DEFAULT_ROOT, manifestText } from "./build.mjs";
+import { resolveAbsInside } from "./contain.mjs";
 
 const PY_WS = "\\t\\n\\v\\f\\r \\x1c-\\x1f\\x85\\xa0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000";
 const rstrip = (s) => s.replace(new RegExp(`[${PY_WS}]+$`), "");
@@ -46,7 +47,11 @@ const PLACE = {
 function main() {
   const [srcArg, dstArg] = process.argv.slice(2);
   if (!srcArg || !dstArg || process.argv.length !== 4) throw new Error("usage: import-seam.mjs <paste.txt> <data/seam-architect dir>");
-  const src = path.resolve(srcArg), dst = path.resolve(dstArg);
+  const src = path.resolve(srcArg);
+  // The destination gets the same boundary as the source: inside the repository, through no symlink.
+  let dst;
+  try { dst = resolveAbsInside(DEFAULT_ROOT, dstArg); }
+  catch (e) { throw new Error(`destination must lie inside the repository (${DEFAULT_ROOT}): ${e.message}`); }
   const source = path.relative(DEFAULT_ROOT, src).split(path.sep).join("/");
   if (source.startsWith("..")) throw new Error(`source must lie inside the repository (${DEFAULT_ROOT})`);
 
