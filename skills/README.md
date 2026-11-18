@@ -2,7 +2,7 @@
 
 Portable Agent Skills (`<name>/SKILL.md` plus reference files), built from data.
 
-- `skills/` — the generated skills. Format is checked natively by `tools/check.mjs`; set `AGENTSKILLS_BIN` to also cross-check with the third-party `agentskills validate`.
+- `skills/` — the generated skills. Format is checked natively by `tools/check.mjs`; pass `--agentskills PATH` to `tools/check.mjs` to also cross-check with the third-party `agentskills validate`.
 - `data/` — the source of truth for each skill (below).
 - `originals/` — source texts that are kept unedited. Nothing under `originals/` is ever edited.
 - `experiments/` — recorded experiments, each with its protocol, answers and results.
