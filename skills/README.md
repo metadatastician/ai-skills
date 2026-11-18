@@ -22,15 +22,15 @@ Some material is kept outside this repository. The tools read an optional overla
 The tools are plain ES modules that need only Bun (Node 22 also works) and no installed packages.
 
 ```bash
-bun tools/build.mjs
+bun skills/tools/build.mjs
 ```
 
 ```bash
-bun tools/check.mjs
+bun skills/tools/check.mjs
 ```
 
 ```bash
-bun tools/inventory.mjs --overlay DIR
+bun skills/tools/inventory.mjs --overlay DIR
 ```
 
 `check.mjs` fails if the output is not valid Agent Skills format (checked natively), if a required section for the skill's family is missing, if any line of the source text is absent from the output (needs the source in the overlay), or if `skills/` differs from a fresh render. If the third-party `agentskills` validator is installed at the path named in `tools/check.mjs`, it is also run as an optional cross-check and reported on its own line; when it is absent the check says so and does not fail. `tools/import-seam.mjs <paste.txt> <data/seam-architect>` is the one-off importer that created the data layout from a pasted source text.
@@ -40,7 +40,7 @@ bun tools/inventory.mjs --overlay DIR
 `tools/recover-skills.mjs` searches exported AI chat histories (`.json`, `.jsonl`, `.ndjson`, files or whole directories) for long messages that look like skill texts: it walks every JSON value generically, scores each string of at least `--min-words` words (default 300) against a list of skill features and, when a names file is given (`--names FILE`, or `names.txt` in the overlay), the names in it (a short name, "Use when", an `Instructions` line, a version marker, typical headings, a "You are ..." opener, YAML frontmatter), de-duplicates identical texts and writes every distinct version under `recovered/<name>/`, longest first, together with `recovered/INDEX.md` (skill, rank, words, date, role, conversation title, source file, score, features, hash, and all locations).
 
 ```bash
-bun tools/recover-skills.mjs --out recovered --names names.txt path/to/exports/ path/to/one-chat.jsonl
+bun skills/tools/recover-skills.mjs --names names.txt path/to/exports/ path/to/one-chat.jsonl
 ```
 
 It runs entirely locally: only Node built-ins are used, it opens no network connection, and it writes nothing outside the `--out` directory. `recovered/` is listed in `.gitignore`. Chat exports contain private material, so review everything in `recovered/` before anything from it is committed or shared.

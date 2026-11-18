@@ -5,7 +5,7 @@
 //
 // PRIVACY / SAFETY: this tool runs entirely locally. It imports only node:fs,
 // node:path and node:crypto, never opens a network connection, and writes only
-// inside the output directory (--out, default "recovered/"). Every write goes
+// inside the output directory (--out, default skills/recovered/ whatever the working directory). Every write goes
 // through writeInside(), which refuses any path that resolves outside that
 // directory. Chat exports contain private material: review the output before
 // committing or sharing any of it.
@@ -17,6 +17,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
+import { fileURLToPath } from "node:url";
+
+// The default output directory is skills/recovered/, fixed to this file's place
+// rather than the working directory, so skills/.gitignore always covers it:
+// recovered text comes from private chats and must never be staged by accident.
+const DEFAULT_OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "recovered");
 
 // ---------------------------------------------------------------- constants
 
@@ -261,7 +267,7 @@ function fail(msg, code = 2) {
 }
 
 function parseArgs(argv) {
-  const opts = { out: "recovered", minWords: 300, names: [], namesFile: null, overlay: process.env.SKILLS_OVERLAY || null, inputs: [] };
+  const opts = { out: DEFAULT_OUT, minWords: 300, names: [], namesFile: null, overlay: process.env.SKILLS_OVERLAY || null, inputs: [] };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const val = (flag) => {
