@@ -24,7 +24,9 @@ export function resolveInside(root, rel, under = "") {
   if (typeof rel !== "string" || rel === "" || rel.includes("\0") || path.isAbsolute(rel) || /^[A-Za-z]:/.test(rel)) {
     throw new Error(`path must be relative and non-empty, got ${JSON.stringify(rel)}`);
   }
-  const realRoot = fs.realpathSync(root);
+  // A root that does not exist yet has nothing below it to follow.
+  let realRoot;
+  try { realRoot = fs.realpathSync(root); } catch (e) { if (e.code !== "ENOENT") throw e; realRoot = path.resolve(root); }
   const relParts = rel.split(/[\/\\]+/).filter((p) => p !== "" && p !== ".");
   if (relParts.includes("..")) throw new Error(`path escapes its directory: ${JSON.stringify(rel)}`);
   const parts = under ? [assertSegment(under, "directory"), ...relParts] : relParts;
