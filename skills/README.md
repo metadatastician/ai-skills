@@ -2,7 +2,7 @@
 
 Portable Agent Skills (`<name>/SKILL.md` plus reference files), built from data.
 
-- `skills/` — the generated skills. Format is checked natively by `tools/check.mjs`; pass `--agentskills PATH` to `tools/check.mjs` to also cross-check with the third-party `agentskills validate`.
+- `skills/` — the skills. `seam-architect` is generated from `data/`. `proof-craft` is written by hand as a finished `SKILL.md` and is not yet covered by `tools/check.mjs`. Format is checked natively by `tools/check.mjs`; pass `--agentskills PATH` to `tools/check.mjs` to also cross-check with the third-party `agentskills validate`.
 - `data/` — the source of truth for each skill (below).
 - `originals/` — source texts that are kept unedited. Nothing under `originals/` is ever edited.
 - `experiments/` — recorded experiments, each with its protocol, answers and results.
