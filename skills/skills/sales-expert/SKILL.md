@@ -1,6 +1,6 @@
 ---
-name: Analyze sales opportunities, build customer personas, and generate playbooks heavily rooted in the Sandler Sales Methodology. Use when asked to plan a sales call, evaluate a deal, role-play sales calls, handle objections, review sales emails, or act as a sales expert.
-description: ""
+name: sales-expert
+description: "Analyze sales opportunities, build customer personas, and generate playbooks heavily rooted in the Sandler Sales Methodology. Use when asked to plan a sales call, evaluate a deal, role-play sales calls, handle objections, review sales emails, or act as a sales expert."
 metadata:
   version: '3.0'
 ---
