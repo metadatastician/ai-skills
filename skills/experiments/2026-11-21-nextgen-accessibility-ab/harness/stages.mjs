@@ -6,7 +6,7 @@
 //   bun stages.mjs <scratchpad> extract|lists|collect [c1,c2,...]
 import fs from "node:fs";
 import path from "node:path";
-import { fence, material as sharedMaterial, outputRule, UNTRUSTED } from "./material.mjs";
+import { fence, material as sharedMaterial, replyRule, UNTRUSTED } from "./material.mjs";
 // score.mjs runs its CLI on import, so JCS is copied here verbatim from it.
 function jcs(v) {
   if (v === null || typeof v === "boolean") return JSON.stringify(v);
@@ -21,7 +21,7 @@ const SP = process.argv[2], stage = process.argv[3];
 const P = SP + "/ab/prompts", O = SP + "/ab/out";
 const cases = ["c1","c2","c3","c4","c5","c6","c7","c8","c9"].filter((c) => !process.argv[4] || process.argv[4].split(",").includes(c));
 const header = "You are taking part in a recorded experiment. Everything you need is in this file. Do not open, list or search any other file or directory, and do not use the web.\n\n" + UNTRUSTED;
-const tail = (out) => outputRule(path.relative(SP, out), " It must be valid JSON.");
+const tail = (out) => replyRule(path.relative(SP, out), " It must be valid JSON, with no code fence around it.");
 const material = (c) => sharedMaterial(EXP, c);
 const src = { team: (c) => `${O}/${c}-lead.md`, baseline: (c) => [`${O}/${c}-baseline-p1.md`, `${O}/${c}-baseline-p2.md`] };
 const readJson = (f) => JSON.parse(fs.readFileSync(f, "utf8").trim().replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, ""));

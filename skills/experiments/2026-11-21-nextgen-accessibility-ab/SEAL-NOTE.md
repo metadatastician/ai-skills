@@ -83,7 +83,18 @@ the run. None of the results describe the changed files.**
   control tags with a visible marker. So the lead now sees altered reviewer
   text, unlike in the recorded run. (d) Each prompt ends with a
   machine-readable JSON output policy (one allowed write). No tool reads
-  that policy yet, so on its own it enforces nothing. As
+  that policy yet, so on its own it enforces nothing. A fifth round, at the
+  owner's decision, answered the scanner's point that (d) was prompt text
+  only. (e) The arms now get no tools. Each prompt's output rule,
+  `replyRule()`, asks for the answer as a plain text reply, and its policy
+  block is now version 2: reply-only, no tools, one save path. (f) A new
+  script, `harness/save.mjs`, reads that block, checks the path again, and
+  writes the reply itself. It refuses to overwrite a file, to follow a link
+  out of `ab/out/`, or to save an empty reply, "cannot comply" or invalid
+  JSON, and it exits non-zero when it refuses. `recall.mjs` uses the same
+  rule. The code cannot stop a runner from granting tools: a rerun must
+  start each arm with none. The recorded run gave the arms the Write tool
+  and let them write their own files. As
   run, the fences were plain three-backtick fences, there was no data notice,
   and the case brief was not fenced. Hashes as run: `build.mjs`
   `ba1aae8ab41ef7079311c9b63e081fc72927837d545f8ce299b4d5e8b733de26`,
