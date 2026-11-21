@@ -11,7 +11,7 @@ const body = (f) => fs.readFileSync(f, "utf8").replace(/^---\n[\s\S]*?\n---\n/, 
 const theory = fs.readFileSync(REPO + "/skills/skills/nextgen-accessibility-team/references/theory.md", "utf8");
 const cases = ["c1","c2","c3","c4","c5","c6","c7","c8","c9"].filter((c) => !process.argv[4] || process.argv[4].split(",").includes(c));
 const material = (c) => sharedMaterial(EXP, c);
-const tail = (out) => outputRule(out);
+const tail = (out) => outputRule(path.relative(SP, out));
 const W = (name, text) => fs.writeFileSync(P + "/" + name, text);
 const header = "You are taking part in a recorded experiment. Everything you need is in this file. Do not open, list or search any other file or directory, and do not use the web.\n\n" + UNTRUSTED;
 if (stage === "wave1") for (const c of cases) {

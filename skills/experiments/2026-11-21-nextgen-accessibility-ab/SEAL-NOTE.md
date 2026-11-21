@@ -65,7 +65,18 @@ the run. None of the results describe the changed files.**
   own data notice. One shared output rule, `outputRule()`, allows exactly one
   file to be written and says to write nothing if that cannot be kept. These
   are instructions to a model. Only a sandbox that limits writes would
-  enforce them, and this harness has none. As
+  enforce them, and this harness has none. A third round, at the owner's
+  decision, applied the scanner's own suggestions. (a) Each case file body
+  is Base64-encoded, and the model is told to decode it before reviewing.
+  The reviewers then see encoded text, not the text readers get, so a rerun
+  with this harness would be a different experiment from the one recorded.
+  (b) `assertSafeOutputPath()` refuses an output path that is empty, has a
+  NUL, is absolute, has a `..` segment, or lies outside `ab/out/`. So each
+  prompt now names its output file relative to the scratch folder (for
+  example `ab/out/c1-lead.md`), not as the absolute path used in the run.
+  Whoever runs the arms must start each agent in the scratch folder. These checks
+  apply to the path the harness writes into the prompt. They do not limit
+  what the Write tool can do. As
   run, the fences were plain three-backtick fences, there was no data notice,
   and the case brief was not fenced. Hashes as run: `build.mjs`
   `ba1aae8ab41ef7079311c9b63e081fc72927837d545f8ce299b4d5e8b733de26`,
