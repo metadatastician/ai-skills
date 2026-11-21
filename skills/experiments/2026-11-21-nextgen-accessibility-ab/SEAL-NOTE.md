@@ -76,7 +76,14 @@ the run. None of the results describe the changed files.**
   example `ab/out/c1-lead.md`), not as the absolute path used in the run.
   Whoever runs the arms must start each agent in the scratch folder. These checks
   apply to the path the harness writes into the prompt. They do not limit
-  what the Write tool can do. As
+  what the Write tool can do. A fourth round, also at the owner's
+  decision, applied two more scanner suggestions. (c) `quoteUntrusted()`
+  quotes every line of each reviewer output with "> " before the lead sees
+  it, and replaces role labels, "ignore previous instructions" phrases and
+  control tags with a visible marker. So the lead now sees altered reviewer
+  text, unlike in the recorded run. (d) Each prompt ends with a
+  machine-readable JSON output policy (one allowed write). No tool reads
+  that policy yet, so on its own it enforces nothing. As
   run, the fences were plain three-backtick fences, there was no data notice,
   and the case brief was not fenced. Hashes as run: `build.mjs`
   `ba1aae8ab41ef7079311c9b63e081fc72927837d545f8ce299b4d5e8b733de26`,

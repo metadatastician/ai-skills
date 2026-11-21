@@ -3,7 +3,7 @@
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 import fs from "node:fs"; import path from "node:path";
-import { fence, material as sharedMaterial, outputRule, UNTRUSTED } from "./material.mjs";
+import { fence, material as sharedMaterial, outputRule, quoteUntrusted, UNTRUSTED } from "./material.mjs";
 const REPO = "/home/user/ai-skills", EXP = REPO + "/skills/experiments/2026-11-21-nextgen-accessibility-ab";
 const SP = process.argv[2], stage = process.argv[3];
 const P = SP + "/ab/prompts", O = SP + "/ab/out";
@@ -21,7 +21,7 @@ if (stage === "wave1") for (const c of cases) {
   W(`${c}-baseline-p1.md`, header + "# YOUR INSTRUCTIONS\n\n" + brief + "\n\n" + material(c) + tail(`${O}/${c}-baseline-p1.md`));
 }
 if (stage === "wave2") for (const c of cases) {
-  let rv = ""; for (const r of ["fidelity","alignment-gap","reader-privacy","outcomes"]) rv += `\n\n## Reviewer: ${r}\n\n` + fence(fs.readFileSync(`${O}/${c}-${r}.md`, "utf8"));
+  let rv = ""; for (const r of ["fidelity","alignment-gap","reader-privacy","outcomes"]) rv += `\n\n## Reviewer: ${r}\n\n` + fence(quoteUntrusted(fs.readFileSync(`${O}/${c}-${r}.md`, "utf8")));
   W(`${c}-lead.md`, header + "# YOUR INSTRUCTIONS\n\n" + body(REPO + "/.claude/agents/nai-lead.md").replace(/Read `skills[^`]*` before you\nstart if you can reach it\./, "The theory is given below.") + "\n\n# THEORY\n\n" + theory + "\n\n" + material(c) + "\n\n# REVIEWER OUTPUTS" + rv + tail(`${O}/${c}-lead.md`));
   const full = fs.readFileSync(EXP + "/prompts/baseline-brief.md", "utf8");
   W(`${c}-baseline-p2.md`, header + "# YOUR INSTRUCTIONS\n\n" + full + "\n\nThis is your second pass.\n\n" + material(c) + "\n\n# YOUR FIRST REVIEW\n\n" + fence(fs.readFileSync(`${O}/${c}-baseline-p1.md`, "utf8")) + tail(`${O}/${c}-baseline-p2.md`));
