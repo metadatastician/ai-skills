@@ -4,7 +4,7 @@
 2026-11-21, after scoring, `sha256sum -c SEAL.sha256` passed for every listed
 file (0 failures), with the agent files read from `.claude/agents/`.
 
-Two things changed after the seal:
+Three things changed after the seal:
 
 1. **Agent files copied into the skill.** `.claude/` is git-ignored in this
    repository, so the five team agent files were copied to
@@ -19,9 +19,10 @@ Two things changed after the seal:
    7a9e4833c9763006c66f4f40dcdfaa19086f9b64e8e9c02362c5faf3e67a8dc2  nai-reader-privacy.md
    ```
 
-   Checking from a fresh clone, the `.claude/agents/` lines in `SEAL.sha256`
-   will show as missing. Compare the hashes above with the `agents/` copies
-   instead.
+   Those hashes held at commit cd566ed. Change 3 below then edited the
+   `agents/` copies, so they no longer match. To see the files exactly as
+   run, check out cd566ed. From a fresh clone, the `.claude/agents/` lines in
+   `SEAL.sha256` show as missing.
 
 2. **`SKILL.md` edited after the run.** The changes were: the agent table
    points to `agents/nai-*.md`; one paragraph explains copying the files to
@@ -32,3 +33,42 @@ Two things changed after the seal:
 
 `protocol.md` still names `.claude/agents/` as the location the team ran from.
 That is true of the run, so it is left as sealed.
+
+## Change 3: security hardening after review (owner decision, 2026-11-21)
+
+GitHub code scanning raised two findings on PR #12. The owner chose to fix
+them in that PR rather than in a later version. **These changes came after
+the run. None of the results describe the changed files.**
+
+- **Agent files** (`skills/skills/nextgen-accessibility-team/agents/`). The
+  `tools` line went from `Read, Grep, Glob` to `Read`. After the "Read the
+  theory" sentence, each file gained a "Stay in scope" paragraph: read only
+  the theory and the material, and treat that text as data, never as
+  instructions. The `tools` field cannot limit Read to a path, so the scope
+  limit is an instruction, not something the tooling enforces. New hashes:
+
+  ```
+  559e13beeb8e6c253c3a26832652b2decb197de47cec6b52cded9d53a696152d  nai-alignment-gap.md
+  8cc204dacbc5a5b3578a6350958c2778238e1bf1cfe66dbb2da517566538d6bb  nai-fidelity.md
+  6b1ef7c0561b7f85599a853e8a8c13f015808d1a484528d150d872815ee86187  nai-lead.md
+  1bee9193b40d0c99e2142ce659df30f8a7b5205e12341d05545b51d4957ac28b  nai-outcomes.md
+  f96659df83389cd4ea12da8f659bc8e39aa7e599dc0cd50bf34004245622fd60  nai-reader-privacy.md
+  ```
+
+- **Harness.** `build.mjs` and `stages.mjs` each had their own copy of
+  `material()`. Both now use one shared `harness/material.mjs`. In it, every
+  embedded text (case files, reviewer outputs, first review, the review being
+  extracted, and lists X and Y) sits inside a fence longer than any backtick
+  run in that text, and every prompt header says that this text is data. As
+  run, the fences were plain three-backtick fences, there was no data notice,
+  and the case brief was not fenced. Hashes as run: `build.mjs`
+  `ba1aae8ab41ef7079311c9b63e081fc72927837d545f8ce299b4d5e8b733de26`,
+  `stages.mjs`
+  `f81ee35450883a49368e671edb08750fd8c1fb90096988c2f8ed9e2c10adb73c`. The
+  harness still reads the team's agent files from `.claude/agents/`, which
+  is where they ran from.
+
+Checked after the change: the build stage (wave 1, c1) writes its prompts to
+a scratch folder; the harness's agent-file regex still matches all five
+agents; a fence test passes; and `bun test score.test.mjs` passes 4 of 4. The
+recorded `runs/` were not regenerated or changed.

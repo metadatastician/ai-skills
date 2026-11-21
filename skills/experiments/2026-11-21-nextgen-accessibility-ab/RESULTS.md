@@ -153,6 +153,11 @@ about 2.5 times as much per case.
    `skills/skills/nextgen-accessibility-team/agents/`, with identical hashes.
    After the run, `SKILL.md` was changed only to point to the new paths and to
    report this result. See `SEAL-NOTE.md`.
+5. **Security hardening after the run.** At the owner's decision, the agent files
+   were narrowed to the Read tool and given a scope and untrusted-data
+   paragraph. The harness now fences embedded text safely and marks it as
+   data. The results describe the files as run (commit cd566ed), not these.
+   See `SEAL-NOTE.md`, change 3.
 
 ## Limits
 
