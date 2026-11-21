@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bus lane on Riverside Road: simple version | Brackley City Council</title>
+<style>
+  body { font-family: Verdana, sans-serif; font-size: 1.2rem; color: #1a1a1a; background: #fff; line-height: 1.7; max-width: 40rem; margin: 0 auto; padding: 1rem; }
+  a { color: #0b4f8a; }
+  :focus-visible { outline: 3px solid #0b4f8a; outline-offset: 2px; }
+  button, input[type=submit] { font: inherit; padding: .45rem .9rem; border: 2px solid #1a1a1a; background: #fff; color: #1a1a1a; }
+  fieldset { border: 1px solid #4a4a4a; }
+  label { display: block; margin: .35rem 0; }
+</style>
+</head>
+<body>
+<header><p><a href="/">Brackley City Council</a></p></header>
+<main>
+<h1>A new bus lane on Riverside Road</h1>
+<p>We want to make a lane just for buses on Riverside Road.</p>
+<p>Buses will be faster.</p>
+<p>Some parking spaces will go.</p>
+<p>Tell us what you think by 15 December.</p>
+
+<form action="/consult/riverside/respond" method="post">
+  <input type="hidden" name="view" value="simple">
+  <input type="hidden" name="a11y_profile" value="learning-disability">
+  <fieldset>
+    <legend>Do you like the bus lane idea?</legend>
+    <label><input type="radio" name="support" value="support"> Yes</label>
+    <label><input type="radio" name="support" value="oppose"> No</label>
+  </fieldset>
+  <p><input type="submit" value="Send"></p>
+</form>
+<p><a href="/consult/riverside">See the full page</a></p>
+</main>
+</body>
+</html>
