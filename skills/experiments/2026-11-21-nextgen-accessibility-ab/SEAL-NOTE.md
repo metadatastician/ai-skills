@@ -59,7 +59,13 @@ the run. None of the results describe the changed files.**
   `material()`. Both now use one shared `harness/material.mjs`. In it, every
   embedded text (case files, reviewer outputs, first review, the review being
   extracted, and lists X and Y) sits inside a fence longer than any backtick
-  run in that text, and every prompt header says that this text is data. As
+  run in that text, and every prompt header says that this text is data. A
+  second scan round added more: each case file sits between named BEGIN and
+  END UNTRUSTED FILE markers, with its byte count. The material carries its
+  own data notice. One shared output rule, `outputRule()`, allows exactly one
+  file to be written and says to write nothing if that cannot be kept. These
+  are instructions to a model. Only a sandbox that limits writes would
+  enforce them, and this harness has none. As
   run, the fences were plain three-backtick fences, there was no data notice,
   and the case brief was not fenced. Hashes as run: `build.mjs`
   `ba1aae8ab41ef7079311c9b63e081fc72927837d545f8ce299b4d5e8b733de26`,

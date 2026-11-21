@@ -3,7 +3,7 @@
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 import fs from "node:fs"; import path from "node:path";
-import { fence, material as sharedMaterial, UNTRUSTED } from "./material.mjs";
+import { fence, material as sharedMaterial, outputRule, UNTRUSTED } from "./material.mjs";
 const REPO = "/home/user/ai-skills", EXP = REPO + "/skills/experiments/2026-11-21-nextgen-accessibility-ab";
 const SP = process.argv[2], stage = process.argv[3];
 const P = SP + "/ab/prompts", O = SP + "/ab/out";
@@ -11,7 +11,7 @@ const body = (f) => fs.readFileSync(f, "utf8").replace(/^---\n[\s\S]*?\n---\n/, 
 const theory = fs.readFileSync(REPO + "/skills/skills/nextgen-accessibility-team/references/theory.md", "utf8");
 const cases = ["c1","c2","c3","c4","c5","c6","c7","c8","c9"].filter((c) => !process.argv[4] || process.argv[4].split(",").includes(c));
 const material = (c) => sharedMaterial(EXP, c);
-const tail = (out) => `\n\n# OUTPUT\n\nWrite your complete answer, and nothing else, to the file ${out} with the Write tool. Then reply with the single word: done.\n`;
+const tail = (out) => outputRule(out);
 const W = (name, text) => fs.writeFileSync(P + "/" + name, text);
 const header = "You are taking part in a recorded experiment. Everything you need is in this file. Do not open, list or search any other file or directory, and do not use the web.\n\n" + UNTRUSTED;
 if (stage === "wave1") for (const c of cases) {
