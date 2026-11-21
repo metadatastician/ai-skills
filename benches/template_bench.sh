@@ -103,10 +103,12 @@ log_human "====================================="
 
 run_workload escape_hatches 5 bash "$REPO_ROOT/scripts/check-escape-hatches.sh" \
   "$REPO_ROOT/src" "$REPO_ROOT/verification" "$REPO_ROOT/.machine_readable/coaptation"
+# The input is a pinned, committed fixture corpus (benches/fixtures/ijson-jcs), not
+# the live repo, so the workload does not grow when a commit adds JSON data.
 # Clear any caller-supplied IJSON_JCS binary override so the benchmark always
 # measures the same deterministic JS RFC 7493/8785 workload calibrated in
 # benches/baseline.json (production gates still honour IJSON_JCS on PATH).
-run_workload ijson_jcs 5 env -u IJSON_JCS IJSON_JCS_FORCE_JS=1 bash "$REPO_ROOT/scripts/check-ijson-jcs.sh" --enforce "$REPO_ROOT"
+run_workload ijson_jcs 5 env -u IJSON_JCS IJSON_JCS_FORCE_JS=1 bash "$REPO_ROOT/scripts/check-ijson-jcs.sh" --enforce "$REPO_ROOT/benches/fixtures/ijson-jcs"
 run_workload required_contexts 5 bash "$REPO_ROOT/scripts/check-required-contexts.sh" "$REPO_ROOT"
 run_workload root_shape 5 bash "$REPO_ROOT/scripts/check-root-shape.sh" "$REPO_ROOT"
 
