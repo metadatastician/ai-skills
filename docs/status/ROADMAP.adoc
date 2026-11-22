@@ -13,12 +13,12 @@ Waiting time (CI runs, owner review, key rotation) is not in the sizes.
 * Phase: incubating. Maturity: experimental.
 * Nine skills exist. One (`seam-architect`) is built from data and checked.
   Eight are hand-written `SKILL.md` files that no tool checks.
-* Two experiments are recorded, each with a single run:
-  `katamorphe` (ceiling, all arms correct) and `nextgen-accessibility-team` (null).
+* Two experiments are recorded, each with a single run: `katamorphe`
+  (ceiling, all arms correct) and `nextgen-accessibility-team` (null).
 * The skills tools are not run by any Justfile recipe or workflow.
 * `mint-gates` and `analyze (actions, none)` are red on `main`.
-* Signing is blocked: running containers still hold the old key, which leaked.
-  No signed commit lands until the rotated key reaches the container.
+* Signing uses the rotated key (`SHA256:u5pcpAz6…ZGc`) since 2026-11-22.
+  The old, leaked key must never sign again.
 
 == Scope decisions (owner, by selector, 2026-11-22)
 
@@ -35,7 +35,7 @@ Waiting time (CI runs, owner review, key rotation) is not in the sizes.
 | `features/panic-attacker` | Assail on `skills/tools`, Assault on `check.mjs` and `build.mjs` with hostile input.
 | Tool gating | Just recipes on the golden path, and a required CI check.
 | v1.0 skill set | The nine existing skills only. New skills come after v1.0 by the intake path.
-| Distribution | Tagged releases: the generated `skills/` tree as a signed archive with checksums.
+| Distribution | Tagged releases: the generated `skills/` tree as a signed archive with checksums. Every tag meets this rule; the first tag is v1.0.0.
 | Contributions | Owner-curated. Outside PRs welcome in the data layout, with checks passing and a two-run A/B.
 | Plan home | This file. The hub of hubs gets a schedule card on each real change.
 |===
@@ -49,7 +49,7 @@ Doctrine 1: holes before anything else.
 | # | Item | Size | Blocked on
 
 | 0.1 | Add SPDX headers to the six `skills/tools` files. Clears `mint-gates`. Licence edits are owner-only (doctrine 6). | S | owner, by hand
-| 0.2 | Find and fix the CodeQL `analyze (actions, none)` SARIF configuration error at its source. | S | key
+| 0.2 | CodeQL `analyze (actions, none)` fails because default setup is on alongside the advanced workflow `codeql.yml`. The owner decided on 2026-11-22 to keep the workflow and switch default setup off in the repo settings. This is separate from the signing key. | S | owner, repo settings
 | 0.3 | Licence notices for the bench fixtures: `.json.license` sidecars and a copyright line on the fixtures README. | S | owner, by hand
 | 0.4 | Shorten the 83-character line in `benches/fixtures/ijson-jcs/README.adoc`. | S | key
 | 0.5 | Re-cut `benches/baseline.json` with `compute-bench-baseline.sh` from 10 or more `main` CI runs. Write `benchmarks/README.adoc`, which the baseline and the gate both cite but which does not exist. | S | CI runs, key
@@ -144,12 +144,12 @@ single runs exist, so each needs a repeat; seven skills need both runs.
 | 7.2 | Release workflow: on a tag, build `skills/`, archive it, publish checksums, sign with the rotated key. | M
 | 7.3 | `examples/`: one worked example of installing and using a skill from a release. | S
 | 7.4 | Contributor guide for skills: data layout, checks, two-run A/B, owner review. | S
-| 7.5 | Cut v0.1.0 at the end of Phase 2, and v1.0.0 when Phases 0 to 7 are done. | S
+| 7.5 | Record v0.1.0 here at the end of Phase 2 as a milestone, with no tag. Tag v1.0.0, the first release, when Phases 0 to 7 are done. | S
 |===
 
 == Milestones
 
-=== v0.1.0, foundation
+=== v0.1.0, foundation (milestone only, no tag)
 * [ ] Phase 0 done: `main` is green
 * [ ] Phase 1 done: tools wired and required, deed filled, README real
 * [ ] Phase 2 done: all nine skills built from data and checked
@@ -163,11 +163,15 @@ single runs exist, so each needs a repeat; seven skills need both runs.
 
 == After v1.0 (ideal list)
 
-* Skill intake path, including skills recovered from chat exports through the private overlay.
-* A second, independent judge for experiments, such as human expert raters where a skill claims to help a group of people.
+* Skill intake path, including skills recovered from chat exports through
+  the private overlay.
+* A second, independent judge for experiments, such as human expert raters
+  where a skill claims to help a group of people.
 * A Zig native checker behind the ABI, only if a non-Bun consumer needs one.
-* Migrate workflow YAML to KYAML once the lock-coverage shim is a required context (D280).
-* Move the transitional `ijson-jcs` gate to a pinned `kyq` once it passes its tests.
+* Migrate workflow YAML to KYAML once the lock-coverage shim is a required
+  context (D280).
+* Move the transitional `ijson-jcs` gate to a pinned `kyq` once it passes
+  its tests.
 
 == Rough total
 
@@ -178,6 +182,6 @@ licence edits, deed review, every experiment result, and every merge.
 == Next actions
 
 . Owner: add the six SPDX headers and the fixture licence notices (0.1, 0.3).
-. Rotate the signing key into the container. Every commit below waits on it.
+. Owner: switch CodeQL default setup off in the repo settings (0.2).
 . Merge this roadmap.
-. Start Phase 1.1 and 1.2 (wiring) and 0.2 (CodeQL) in parallel.
+. Start Phase 1.1 and 1.2 (wiring).
