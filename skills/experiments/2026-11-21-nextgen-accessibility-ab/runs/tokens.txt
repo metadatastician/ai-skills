@@ -1,0 +1,108 @@
+c1-reader-privacy 83316
+c2-reader-privacy 85408
+c4-fidelity 83952
+c2-fidelity 88012
+c2-alignment-gap 87550
+c3-reader-privacy 87663
+c1-baseline-p1 85023
+c2-baseline-p1 85790
+c2-outcomes 88295
+c1-outcomes 87657
+c3-fidelity 89108
+c1-alignment-gap 87817
+c3-alignment-gap 88886
+c1-fidelity 88903
+c3-outcomes 88796
+c4-reader-privacy 85883
+c4-alignment-gap 85644
+c3-baseline-p1 86903
+c4-outcomes 86213
+c5-fidelity 88473
+c4-baseline-p1 86702
+c9-fidelity 81547
+c6-reader-privacy 83371
+c7-reader-privacy 82942
+c8-reader-privacy unrecorded (container restart lost the usage notice)
+c8-fidelity unrecorded (container restart lost the usage notice)
+c5-reader-privacy unrecorded (container restart lost the usage notice)
+c7-baseline-p1 unrecorded (container restart lost the usage notice)
+c6-outcomes unrecorded (container restart lost the usage notice)
+c7-fidelity unrecorded (container restart lost the usage notice)
+c7-alignment-gap unrecorded (container restart lost the usage notice)
+c8-alignment-gap unrecorded (container restart lost the usage notice)
+c8-outcomes unrecorded (container restart lost the usage notice)
+c7-outcomes unrecorded (container restart lost the usage notice)
+c6-baseline-p1 unrecorded (container restart lost the usage notice)
+c5-baseline-p1 unrecorded (container restart lost the usage notice)
+c6-alignment-gap unrecorded (container restart lost the usage notice)
+c6-fidelity unrecorded (container restart lost the usage notice)
+c5-outcomes unrecorded (container restart lost the usage notice)
+c5-alignment-gap unrecorded (container restart lost the usage notice)
+c8-baseline-p1 unrecorded (container restart lost the usage notice)
+c1-baseline-p2 unrecorded (container restart lost the usage notice)
+c1-lead unrecorded (container restart lost the usage notice)
+c2-lead unrecorded (container restart lost the usage notice)
+c9-reader-privacy 82981
+c9-alignment-gap 83926
+c9-outcomes 83258
+c8-baseline-p2 88944
+c5-baseline-p2 88390
+c7-baseline-p2 87003
+c2-baseline-p2 88889
+c6-baseline-p2 87763
+c3-baseline-p2 90327
+c4-baseline-p2 89881
+c9-baseline-p1 84234
+c5-lead 110856
+c8-lead 106708
+c6-lead 108671
+c7-lead 109159
+c3-lead 116885
+c4-lead 111473
+c9-baseline-p2 84648
+c1-extract-baseline(p2-only,superseded) 77835
+c2-extract-baseline(p2-only,superseded) 78371
+c5-extract-baseline(p2-only,superseded) 78478
+c6-extract-baseline(p2-only,superseded) 78433
+c3-extract-baseline(p2-only,superseded) 79028
+c8-extract-baseline(p2-only,superseded) 79608
+c4-extract-baseline(p2-only,superseded) 79862
+c7-extract-baseline(p2-only,superseded) 79858
+c6-extract-team 85606
+c5-extract-team 85972
+c8-extract-team 86883
+c7-extract-team 86098
+c1-extract-team 86742
+c4-extract-team 88031
+c2-extract-team 88627
+c3-extract-team 89376
+c9-lead 95691
+c1-extract-baseline 84794
+c2-extract-baseline 87575
+c3-extract-baseline 88544
+c4-extract-baseline 90516
+c5-extract-baseline 87022
+c6-extract-baseline 85575
+c7-extract-baseline 86607
+c8-extract-baseline 90458
+c9-extract-baseline 81102
+c9-extract-team 81077
+c9-judge1 82520
+c5-judge2 88532
+c9-judge2 82920
+c6-judge2 87853
+c8-judge2 89934
+c5-judge1 88647
+c8-judge1 89835
+c2-judge2 90998
+c2-judge1 91193
+c7-judge2 89223
+c4-judge1 91389
+c7-judge1 89185
+c6-judge1 88327
+c3-judge1 92115
+c3-judge2 91980
+c1-judge1 87999
+c1-judge2 88088
+c4-judge2 92199
+recall-matcher 117666

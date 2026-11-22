@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign up for our newsletter | Kestrel Arts</title>
+<style>
+  body { font-family: Arial, sans-serif; color: #1a1a1a; background: #fff; line-height: 1.6; max-width: 36rem; margin: 0 auto; padding: 1rem; }
+  a { color: #0b4f8a; }
+  :focus-visible { outline: 3px solid #0b4f8a; outline-offset: 2px; }
+  label { display: block; margin-top: 1rem; font-weight: bold; }
+  input[type=text], input[type=email] { font: inherit; width: 100%; max-width: 24rem; border: 2px solid #4a4a4a; padding: .4rem; }
+  .hint { margin: .2rem 0; color: #3d3d3d; }
+  .error { color: #8a1c1c; font-weight: bold; margin: .2rem 0; }
+  .summary { border: 3px solid #8a1c1c; padding: .5rem 1rem; }
+  button { font: inherit; margin-top: 1.25rem; padding: .5rem 1rem; border: 2px solid #1a1a1a; background: #1a1a1a; color: #fff; }
+</style>
+</head>
+<body>
+<header><p><a href="/">Kestrel Arts</a></p></header>
+<main>
+<h1>Sign up for our newsletter</h1>
+<p>One email a month about exhibitions, workshops and events. You can unsubscribe at any time.</p>
+
+<div id="summary" class="summary" tabindex="-1" hidden>
+  <h2>There is a problem</h2>
+  <ul id="summary-list"></ul>
+</div>
+
+<form id="signup" action="/newsletter" method="post" novalidate>
+  <label for="fname">First name</label>
+  <input type="text" id="fname" name="fname" autocomplete="given-name">
+
+  <label for="email">Email address</label>
+  <p class="hint" id="email-hint">We will only use this to send the newsletter.</p>
+  <p class="error" id="email-error" hidden></p>
+  <input type="email" id="email" name="email" autocomplete="email" aria-describedby="email-hint email-error">
+
+  <button type="submit">Sign up</button>
+</form>
+<p><a href="/privacy">How we use your information</a></p>
+</main>
+<footer><p><a href="/accessibility">Accessibility statement</a></p></footer>
+<script>
+  const form = document.getElementById('signup');
+  form.addEventListener('submit', (e) => {
+    const email = document.getElementById('email');
+    const err = document.getElementById('email-error');
+    const summary = document.getElementById('summary');
+    const list = document.getElementById('summary-list');
+    list.innerHTML = '';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value)) {
+      e.preventDefault();
+      err.textContent = 'Enter an email address in the correct format, like name@example.com';
+      err.hidden = false;
+      email.setAttribute('aria-invalid', 'true');
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#email'; a.textContent = err.textContent;
+      li.appendChild(a); list.appendChild(li);
+      summary.hidden = false; summary.focus();
+    } else {
+      err.hidden = true;
+      email.removeAttribute('aria-invalid');
+      summary.hidden = true;
+    }
+  });
+</script>
+</body>
+</html>

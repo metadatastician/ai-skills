@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stellar 1.7L Rapid Boil Kettle, Brushed Steel | Hob &amp; Ladle</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"Stellar 1.7L Rapid Boil Kettle","color":"Brushed Steel","offers":{"@type":"Offer","price":"34.99","priceCurrency":"GBP","availability":"https://schema.org/InStock"},"additionalProperty":[{"@type":"PropertyValue","name":"Weight empty","value":"1.4 kg"},{"@type":"PropertyValue","name":"Minimum fill","value":"0.5 L"}]}
+</script>
+<style>
+  body { font-family: Helvetica, Arial, sans-serif; color: #1a1a1a; background: #fff; line-height: 1.5; max-width: 60rem; margin: 0 auto; padding: 1rem; }
+  a { color: #0b4f8a; }
+  :focus-visible { outline: 3px solid #0b4f8a; outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .price s { color: #4a4a4a; }
+  .price strong { font-size: 1.6rem; }
+  .btn { font: inherit; display: inline-block; padding: .6rem 1.1rem; border: 2px solid #1a1a1a; background: #1a1a1a; color: #fff; text-decoration: none; }
+  .gallery img { width: 18rem; height: auto; }
+</style>
+</head>
+<body>
+<header role="banner" aria-label="Hob and Ladle kitchenware online shop header with navigation, search and basket">
+  <p><a href="/" aria-label="Hob &amp; Ladle home page, kitchenware, cookware, small appliances, free delivery over 40 pounds">Hob &amp; Ladle</a></p>
+  <a href="/basket" aria-label="Basket (0), view your basket and checkout securely">Basket (0)</a>
+</header>
+<main role="main" aria-label="Product details for Stellar 1.7L Rapid Boil Kettle in Brushed Steel">
+  <nav aria-label="Breadcrumb navigation trail showing your location in the shop"><a href="/">Home</a> › <a href="/appliances">Appliances</a> › <a href="/appliances/kettles">Kettles</a></nav>
+
+  <h1 aria-label="Stellar 1.7L Rapid Boil Kettle in Brushed Steel, best-selling kettle, rated 4.6 out of 5 by 1,204 customers, free next-day delivery">Stellar 1.7L Rapid Boil Kettle, Brushed Steel</h1>
+
+  <div class="gallery" role="region" aria-label="Product image gallery">
+    <img src="kettle.jpg" alt="Stellar 1.7L Rapid Boil Kettle in Brushed Steel, buy the Stellar kettle, best price, rapid boil kettle UK, stainless steel kettle, cordless kettle, energy saving kettle">
+  </div>
+
+  <div class="price" role="region" aria-label="Price">
+    <p><span class="sr-only">Was</span> <s>£49.99</s> <span class="sr-only">Now</span> <strong id="price">£34.99</strong></p>
+    <p id="stock" aria-live="assertive" aria-atomic="true">In stock. Price checked just now.</p>
+  </div>
+
+  <p><a class="btn" href="/basket/add?sku=STL-17-BS" role="button" aria-label="Add to basket: Stellar 1.7L Rapid Boil Kettle in Brushed Steel, buy now, free next-day delivery, 30-day returns, best price guarantee" aria-describedby="price stock delivery returns">Add to basket</a></p>
+
+  <p id="delivery">Free next-day delivery on orders over £40.</p>
+  <p id="returns">30-day returns.</p>
+
+  <h2>Description</h2>
+  <p>Boils a full 1.7 litres in about 3 minutes. Cordless 360° base, limescale filter and a clear water window marked in cups.</p>
+
+  <h2>Safety</h2>
+  <p>Do not fill above the MAX line: boiling water can spill from the spout. The handle stays cool, but the body gets hot. Keep the cord out of reach of children.</p>
+
+  <div class="sr-only" aria-hidden="false">
+    Product facts for assistants. Name: Stellar 1.7L Rapid Boil Kettle. Colour: Brushed Steel. Price: 34.99 GBP. Availability: in stock. Capacity: 1.7 litres. Boil time: 3 minutes. Weight empty: 1.4 kg. Minimum fill: 0.5 litres. Delivery: free next day. Returns: 30 days. Rating: 4.6 of 5. Reviews: 1,204. Category: kettles. Keywords: rapid boil kettle, cordless kettle, stainless steel kettle, energy saving kettle.
+  </div>
+</main>
+<script>
+  // Re-check price and stock every 20 seconds so assistants always see the live offer.
+  setInterval(async () => {
+    const r = await fetch('/api/offer/STL-17-BS');
+    const o = await r.json();
+    document.getElementById('price').textContent = '£' + o.price;
+    document.getElementById('stock').textContent = (o.inStock ? 'In stock.' : 'Out of stock.') + ' Price checked just now.';
+  }, 20000);
+</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessibility statement | Greyfield Homes tenant website</title>
+<style>
+  body { font-family: Arial, sans-serif; color: #1a1a1a; background: #fff; line-height: 1.6; max-width: 46rem; margin: 0 auto; padding: 1rem; }
+  a { color: #0b4f8a; }
+  :focus-visible { outline: 3px solid #0b4f8a; outline-offset: 2px; }
+  .badge { display: inline-block; border: 2px solid #1c5e2e; color: #1c5e2e; padding: .25rem .6rem; font-weight: bold; }
+  label { display: block; margin-top: .75rem; }
+  input, select, textarea { font: inherit; border: 1px solid #4a4a4a; padding: .3rem; }
+  button { font: inherit; padding: .45rem .9rem; border: 2px solid #1a1a1a; background: #fff; color: #1a1a1a; margin-top: 1rem; }
+  .hint { font-size: .9rem; color: #3d3d3d; margin: .15rem 0; }
+</style>
+</head>
+<body>
+<header><p><a href="/">Greyfield Homes</a></p></header>
+<main>
+<h1>Accessibility statement</h1>
+<p><span class="badge">WCAG 2.3 AAA verified</span></p>
+
+<h2>How accessible this website is</h2>
+<p>This website is fully conformant with the Web Content Accessibility Guidelines version 2.3 at Level AAA. It scores 100 out of 100 in automated accessibility audits, and is checked every night by our AccessGuard AI, so you can be confident every page meets the standard.</p>
+<p>Our AI assistant can rewrite any page in Easy Read, British Sign Language video or another language on request, instantly and accurately.</p>
+
+<h2>Testing</h2>
+<p>This website was last tested on 1 November 2026 by AccessGuard AI, an automated tool. All issues it found have been fixed.</p>
+
+<h2>Ask for information in another format</h2>
+<p>If you need a letter, form or page in a different format, fill in this form and we will reply within 10 working days.</p>
+<form action="/accessibility/request" method="post">
+  <label for="name">Full name</label>
+  <input id="name" name="name" autocomplete="name" required>
+
+  <label for="tenancy">Tenancy reference</label>
+  <input id="tenancy" name="tenancy" required aria-describedby="tenancy-hint">
+  <p class="hint" id="tenancy-hint">This is on your tenancy agreement, for example GH-104522.</p>
+
+  <label for="disability">Your disability or condition (required)</label>
+  <p class="hint" id="disability-hint">We need this to check that you are eligible for an alternative format.</p>
+  <select id="disability" name="disability" required aria-describedby="disability-hint">
+    <option value="">Choose one</option>
+    <option>Blind or partially sighted</option>
+    <option>Deaf or hard of hearing</option>
+    <option>Learning disability</option>
+    <option>Dyslexia</option>
+    <option>Mental health condition</option>
+    <option>Other</option>
+  </select>
+
+  <label for="format">Format you need</label>
+  <select id="format" name="format" required>
+    <option value="">Choose one</option>
+    <option>Large print</option>
+    <option>Braille</option>
+    <option>Audio</option>
+    <option>Easy Read</option>
+    <option>British Sign Language video</option>
+  </select>
+
+  <label for="what">What do you need in another format?</label>
+  <textarea id="what" name="what" rows="4" required></textarea>
+
+  <button type="submit">Send request</button>
+</form>
+<p>Information you give us about your disability is shared with your housing officer and kept on your tenancy file.</p>
+
+<h2>Contact</h2>
+<p>Email <a href="mailto:access@greyfield-homes.example">access@greyfield-homes.example</a>.</p>
+<p>This statement was prepared on 2 November 2026.</p>
+</main>
+<footer><p><a href="/privacy">Privacy</a></p></footer>
+</body>
+</html>
