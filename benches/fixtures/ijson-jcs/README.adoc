@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MPL-2.0
+= ijson_jcs bench fixture corpus
+
+Pinned, canonical I-JSON (RFC 7493) and JCS (RFC 8785) files.
+`benches/template_bench.sh` times `scripts/check-ijson-jcs.sh` on this folder only.
+That keeps the `ijson_jcs` workload independent of repo size.
+The repo-wide JSON gate still scans these files like any other JSON.
+Changing the file count or size redefines the workload, so cut a new baseline first.
