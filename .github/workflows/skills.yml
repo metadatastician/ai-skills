@@ -33,7 +33,7 @@ concurrency:
 
 jobs:
   build-check-test:
-    name: skills / build-check-test
+    name: "skills / build-check-test"
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
