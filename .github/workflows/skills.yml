@@ -1,0 +1,78 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+#
+# skills.yml — runs the skills tools through the root Justfile (roadmap 1.2):
+# `just skills-build`, `just skills-check`, `just skills-test`.
+#
+# It installs Bun and Just only. `just test` and `just quality` are deliberately
+# not run here: provision::test needs the zig and idris2 toolchains (see
+# quality.yml). The three skills recipes need neither.
+#
+# The job's `name:` IS the required-context string in
+# .machine_readable/required-contexts-allow.txt. Renaming it, or adding a
+# `paths:` filter to the triggers, strands pull requests behind a check that is
+# never produced; scripts/check-required-contexts.sh fails on both.
+#
+# NOT RUN checks (the agentskills cross-check and the no-loss check need an
+# overlay) are printed by check.mjs and are not passes. This job does not turn
+# them into passes.
+name: Skills
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skills-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-check-test:
+    name: "skills / build-check-test"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Bun runtime
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: '1.4.4'
+
+      - name: Install verified Just 1.56.0
+        run: |
+          set -euo pipefail
+          curl --proto '=https' --proto-redir '=https' --fail --silent --show-error --location \
+            https://github.com/casey/just/releases/download/1.56.0/just-1.56.0-x86_64-unknown-linux-musl.tar.gz \
+            --output "$RUNNER_TEMP/just.tar.gz"
+          echo "fa2a8ec1015d9df5330941ade12437488fc40d33f9c9f8cd4eb70a26de11b639  $RUNNER_TEMP/just.tar.gz" | sha256sum --check --strict
+          mkdir -p "$RUNNER_TEMP/just-bin"
+          tar -xzf "$RUNNER_TEMP/just.tar.gz" -C "$RUNNER_TEMP/just-bin" just
+          chmod +x "$RUNNER_TEMP/just-bin/just"
+          echo "$RUNNER_TEMP/just-bin" >> "$GITHUB_PATH"
+
+      - name: skills-build leaves nothing changed
+        run: |
+          set -euo pipefail
+          just skills-build
+          # A tracked change or a new untracked file under skills/ means the
+          # committed output is stale: render it locally and commit it.
+          if [ -n "$(git status --porcelain -- skills)" ]; then
+            git status --short -- skills
+            git diff --stat -- skills
+            echo "::error::skills-build changed skills/; commit the fresh render"
+            exit 1
+          fi
+
+      - name: skills-check
+        run: just skills-check
+
+      - name: skills-test
+        run: just skills-test

@@ -205,11 +205,11 @@ mutate "no concurrency group" 's|^concurrency:$|# concurrency:|'
 mutate "a job-level remote reusable call" \
     's|^  shell-secrets:$|  delegated:\n    permissions:\n      contents: read\n    uses: metadatastician/standards/.github/workflows/secret-scanner-reusable.yml@f0b3cd4c464d33e1584f8528c17bce104555e256\n  shell-secrets:|'
 
-echo "=== 5. Wire-up: the real tree still certifies all three contexts ==="
+echo "=== 5. Wire-up: the real tree still certifies all four contexts ==="
 if command -v bun >/dev/null 2>&1; then
     if bash "$REPO_DIR/scripts/check-required-contexts.sh" "$REPO_DIR" > "$WORK/rc.log" 2>&1; then
-        if grep -q '3 required status context' "$WORK/rc.log"; then
-            ok "check-required-contexts.sh certifies 3 contexts on the real tree"
+        if grep -q '4 required status context' "$WORK/rc.log"; then
+            ok "check-required-contexts.sh certifies 4 contexts on the real tree"
         else
             cp "$WORK/rc.log" "$WORK/why"
             bad "check-required-contexts.sh passed but certified a different count"
