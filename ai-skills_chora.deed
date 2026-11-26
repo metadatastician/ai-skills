@@ -125,11 +125,11 @@
   (ecosystem
     :project "ai-skills"
     :ecosystem "metadatastician"
-    :position-type "UNASSIGNED"
-    :purpose "UNASSIGNED"
+    :position-type "library"
+    :purpose "A public library of agent skills, the tools that build and verify them from data, and the sealed experiments that show each skill works. Not a marketplace."
     :not ("the home of owner-particular data or special cases (a private companion repo holds those)" "llm-grace" "the standards canon" "a skills marketplace")
-    :pipeline-position "UNASSIGNED"
-    :chain "UNASSIGNED"
+    :pipeline-position "source: skills are authored as data/<name>/ here and consumed downstream as the generated skills/ tree"
+    :chain "data/ -> skills/tools build and check -> skills/ -> signed release archive with checksums; experiments verify each skill"
     :coordination standards
     (related :name "rsr-template-repo" :relationship minted-from :notes "the template this repo was minted from by just repo-init"))
   ; <<< repo-identity
