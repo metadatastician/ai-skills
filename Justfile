@@ -134,7 +134,22 @@ clean-all: clean
 # (unit tests in src/main.zig, test/integration_test.zig). It compiles only after
 # `just repo-init` has filled the template tokens, so an un-initialised template
 # fails here loudly instead of reporting a pass over nothing.
-test: provision::test
+# The skills tools (build, check, test) run first, so a missing zig/idris2 toolchain
+# (provision::test fails loudly, exit 127) cannot stop them running: just halts at the
+# first failing dependency.
+test: skills-build skills-check skills-test provision::test
+
+# Render skills/data into skills/skills with the Bun builder
+skills-build:
+    bun skills/tools/build.mjs
+
+# Check every skill: format, family rules, drift vs a fresh render (NOT RUN checks are printed, never a pass)
+skills-check:
+    bun skills/tools/check.mjs
+
+# Run the skills tools test suite under Bun (skills/tools/test)
+skills-test:
+    cd skills && bun test tools/test
 
 # Run tests with verbose output
 test-verbose: provision::test
