@@ -15,7 +15,7 @@ Waiting time (CI runs, owner review, key rotation) is not in the sizes.
   Eight are hand-written `SKILL.md` files that no tool checks.
 * Two experiments are recorded, each with a single run: `katamorphe`
   (ceiling, all arms correct) and `nextgen-accessibility-team` (null).
-* The skills tools are not run by any Justfile recipe or workflow.
+* The skills tools run from Just recipes (`skills-build`, `skills-check`, `skills-test`, on `just test`) and from the `skills / build-check-test` workflow (PR #16).
 * `mint-gates` and `analyze (actions, none)` are red on `main`.
 * Signing uses the rotated key (`SHA256:u5pcpAz6…ZGc`) since 2026-11-22.
   The old, leaked key must never sign again.
@@ -64,8 +64,8 @@ Doctrine 8: unwired is not done.
 |===
 | # | Item | Size
 
-| 1.1 | Just recipes: `skills-build`, `skills-check`, `skills-test` (the `skills/tools/test` suite under Bun). Put them on `just test`. | S
-| 1.2 | A required CI check that runs those recipes. Add it to the required-contexts list so the squabble gate enforces it. | S
+| 1.1 | *Done* (PR #16, `1da5d40`). Just recipes: `skills-build`, `skills-check`, `skills-test` (the `skills/tools/test` suite under Bun). Put them on `just test`. | S
+| 1.2 | *Done* (PR #16, `1da5d40`; the context `skills / build-check-test` is in the producer map, but the org rulesets do not require it yet). A required CI check that runs those recipes. Add it to the required-contexts list so the squabble gate enforces it. | S
 | 1.3 | Fill the deed's UNASSIGNED fields (`IS`, `:purpose`, `:position-type`, `:pipeline-position`, `:chain`) from the scope decisions, for owner review. | S
 | 1.4 | Register the repo with chora-registry. The deed history says "not yet registered". | S
 | 1.5 | Replace the template `README.adoc` with a real one. Remove the template admonition and the three `{{...}}` placeholders. | S
@@ -184,4 +184,4 @@ licence edits, deed review, every experiment result, and every merge.
 . Owner: add the six SPDX headers and the fixture licence notices (0.1, 0.3).
 . Owner: switch CodeQL default setup off in the repo settings (0.2).
 . Merge this roadmap.
-. Start Phase 1.1 and 1.2 (wiring).
+. Phase 1.1 and 1.2 are done (PR #16). Next: 1.3 onward.
