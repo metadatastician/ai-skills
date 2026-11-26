@@ -80,7 +80,7 @@ Doctrine 8: unwired is not done.
 | # | Item | Size
 
 | 2.1 | Generalise `import-seam.mjs` into an importer for any hand-written `SKILL.md`, with tests. | M
-| 2.2 | Convert the eight hand-written skills to `data/<name>/`: hermaneut, katamorphe, master-detective, master-negotiator, nextgen-accessibility-team (with its `agents/` and `references/`), proof-craft, sales-expert, tropos. One PR per skill, each proving the rendered output is byte-identical to the original. | L
+| 2.2 | Convert the hand-written skills (eight before the family merge) to `data/<name>/`: hermaneut, katamorphe, master-detective, deal-craft (the router; master-negotiator and sales-expert are now its `references/negotiator.md` and `references/sales-expert.md`), nextgen-accessibility-team (with its `agents/` and `references/`), proof-craft, tropos. One PR per skill, each proving the rendered output is byte-identical to the original. | L
 | 2.3 | Family rules for every family the nine skills use, kept public where possible and in the private overlay where they are owner-particular. | M
 | 2.4 | Source-coverage check for each skill whose source text is in the overlay. Where no source exists, `check.mjs` reports NOT RUN, never a pass. | M
 |===
