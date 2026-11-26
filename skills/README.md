@@ -33,7 +33,7 @@ bun skills/tools/check.mjs
 bun skills/tools/inventory.mjs --overlay DIR
 ```
 
-`check.mjs` fails if the output is not valid Agent Skills format (checked natively), if a required section for the skill's family is missing, if any line of the source text is absent from the output (needs the source in the overlay), or if `skills/` differs from a fresh render. If the third-party `agentskills` validator is installed at the path named in `tools/check.mjs`, it is also run as an optional cross-check and reported on its own line; when it is absent the check says so and does not fail. `tools/import-seam.mjs <paste.txt> <data/seam-architect>` is the one-off importer that created the data layout from a pasted source text.
+`check.mjs` fails if the output is not valid Agent Skills format (checked natively), if a required section for the skill's family is missing, if any line of the source text is absent from the output (needs the source in the overlay), or if `skills/` differs from a fresh render. The third-party `agentskills` validator runs only when you pass `--agentskills PATH` naming its executable; without the flag the check reports `NOT AVAILABLE (not run)` on its own line and does not fail. `tools/import-seam.mjs <paste.txt> <data/seam-architect>` is the one-off importer that created the data layout from a pasted source text.
 
 ## Recovering skills from chat exports
 
