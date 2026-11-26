@@ -66,7 +66,7 @@ Doctrine 8: unwired is not done.
 
 | 1.1 | *Done* (PR #16, `1da5d40`). Just recipes: `skills-build`, `skills-check`, `skills-test` (the `skills/tools/test` suite under Bun). Put them on `just test`. | S
 | 1.2 | *Done* (PR #16, `1da5d40`; the context `skills / build-check-test` is in the producer map, but the org rulesets do not require it yet). A required CI check that runs those recipes. Add it to the required-contexts list so the squabble gate enforces it. | S
-| 1.3 | Fill the deed's UNASSIGNED fields (`IS`, `:purpose`, `:position-type`, `:pipeline-position`, `:chain`) from the scope decisions, for owner review. | S
+| 1.3 | *Done* (PR #21, `406ac3e`; `:kind`, `:domain` and `unique-strength` stay UNASSIGNED, outside this item). Fill the deed's UNASSIGNED fields (`IS`, `:purpose`, `:position-type`, `:pipeline-position`, `:chain`) from the scope decisions, for owner review. | S
 | 1.4 | Register the repo with chora-registry. The deed history says "not yet registered". | S
 | 1.5 | Replace the template `README.adoc` with a real one. Remove the template admonition and the three `{{...}}` placeholders. | S
 | 1.6 | Bring `skills/README.md` in line: it says `proof-craft` is unchecked, and it lists Node 22 as an option although the anchor forbids Node. Decide whether the file becomes AsciiDoc like the rest of `docs/`. | S
